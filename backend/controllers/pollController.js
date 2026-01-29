@@ -249,19 +249,31 @@ const deletePoll = async (req, res, next) => {
 // @desc    Get user's created polls
 // @route   GET /api/polls/user/created
 // @access  Private
-const getUserPolls = async (req, res, next) => {
+// Get user's polls
+const getUserPolls = async (req, res) => {
   try {
-    const polls = await Poll.find({ creator: req.user.id })
-      .sort('-createdAt')
-      .lean();
+    console.log('📊 getUserPolls called');
+    console.log('📊 User ID:', req.user._id);
+
+    const polls = await Poll.find({ creator: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate('creator', 'username email avatar');
+
+    console.log(`✅ Found ${polls.length} polls for user`);
 
     res.status(200).json({
       success: true,
       count: polls.length,
-      polls
+      polls: polls
     });
+
   } catch (error) {
-    next(error);
+    console.error('❌ Error in getUserPolls:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user polls',
+      error: error.message
+    });
   }
 };
 
@@ -325,10 +337,10 @@ const getTrendingPolls = async (req, res, next) => {
 module.exports = {
   createPoll,
   getPolls,
+  getUserPolls,
   getPollById,
   updatePoll,
   deletePoll,
-  getUserPolls,
   getPollsByCategory,
   getTrendingPolls
 };

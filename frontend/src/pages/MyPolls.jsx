@@ -16,20 +16,65 @@ const MyPolls = () => {
     fetchMyPolls();
   }, []);
 
-  const fetchMyPolls = async () => {
-    try {
-      setLoading(true);
-      const { data } = await pollAPI.getMyPolls();
-      console.log('✅ My polls fetched:', data.polls);
-      setPolls(data.polls || []);
-    } catch (error) {
-      console.error('❌ Error fetching polls:', error);
-      toast.error('Failed to load your polls');
-    } finally {
-      setLoading(false);
+const fetchMyPolls = async () => {
+  try {
+    setLoading(true);
+    console.log('📊 Fetching my polls...');
+    console.log('📊 Token:', localStorage.getItem('token') ? 'EXISTS' : 'MISSING');
+    
+    const response = await pollAPI.getMyPolls();
+    console.log('📊 Full response:', response);
+    
+    const { data } = response;
+    console.log('📊 Response data:', data);
+    
+    // Handle different response formats
+    let pollsList = [];
+    
+    if (data && data.success && Array.isArray(data.polls)) {
+      pollsList = data.polls;
+      console.log('✅ Format 1: data.success with polls array');
+    } else if (data && Array.isArray(data.polls)) {
+      pollsList = data.polls;
+      console.log('✅ Format 2: data with polls array');
+    } else if (Array.isArray(data)) {
+      pollsList = data;
+      console.log('✅ Format 3: data is array');
+    } else {
+      console.warn('⚠️ Unexpected format:', data);
+      pollsList = [];
     }
-  };
-
+    
+    setPolls(pollsList);
+    console.log(`✅ Loaded ${pollsList.length} polls`);
+    
+  } catch (error) {
+    console.error('❌ Error fetching polls:', error);
+    console.error('❌ Error response:', error.response);
+    console.error('❌ Error data:', error.response?.data);
+    console.error('❌ Error status:', error.response?.status);
+    
+    // Better error messages
+    if (error.response?.status === 401) {
+      toast.error('Please login to view your polls');
+      setTimeout(() => navigate('/login'), 1500);
+    } else if (error.response?.status === 404) {
+      toast.error('API endpoint not found. Check backend is running.');
+      setPolls([]);
+    } else if (error.response?.status === 500) {
+      toast.error('Server error. Check backend console.');
+      setPolls([]);
+    } else if (!error.response) {
+      toast.error('Cannot connect to server. Is backend running?');
+      setPolls([]);
+    } else {
+      toast.error(error.response?.data?.message || 'Failed to load polls');
+      setPolls([]);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
   const handleDelete = async (pollId) => {
     if (!window.confirm('Are you sure you want to delete this poll?')) {
       return;

@@ -53,7 +53,15 @@ export const pollAPI = {
   delete: (id) => api.delete(`/polls/${id}`),
   getUserPolls: () => api.get('/polls/user/created'),
   getByCategory: (category, params) => api.get(`/polls/category/${category}`, { params }),
-  getTrending: () => api.get('/polls/trending')
+  getTrending: () => api.get('/polls/trending'),
+  // Get my polls - CORRECT ENDPOINT
+  getMyPolls: () => {
+    console.log('🔍 Calling getMyPolls API');
+    return api.get('/polls/user/my-polls');
+  },
+  
+  // Search polls
+  search: (query) => api.get('/polls/search', { params: { q: query } })
 };
 
 // Vote API

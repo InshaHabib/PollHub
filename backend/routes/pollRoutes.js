@@ -6,14 +6,19 @@ const {
   getPollById,
   updatePoll,
   deletePoll,
-  getUserPolls,
   getPollsByCategory,
-  getTrendingPolls
+  getTrendingPolls,
+  // getAllPolls,
+  getUserPolls
 } = require('../controllers/pollController');
 const { protect, optionalAuth } = require('../middleware/auth');
 
 // Public routes
 router.get('/', getPolls);
+// router.get('/', getAllPolls);
+// User polls - MUST BE BEFORE /:id
+router.get('/user/my-polls', protect, getUserPolls);
+
 router.get('/trending', getTrendingPolls);
 router.get('/category/:category', getPollsByCategory);
 router.get('/:id', optionalAuth, getPollById);
@@ -22,6 +27,5 @@ router.get('/:id', optionalAuth, getPollById);
 router.post('/', protect, createPoll);
 router.put('/:id', protect, updatePoll);
 router.delete('/:id', protect, deletePoll);
-router.get('/user/created', protect, getUserPolls);
 
 module.exports = router;
