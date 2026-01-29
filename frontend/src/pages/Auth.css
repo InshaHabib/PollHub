@@ -12,6 +12,7 @@
   width: 2000px;
 }
 
+
 .auth-card {
   padding: 3rem;
   border-radius: var(--radius-xl);
@@ -23,6 +24,7 @@
   text-align: center;
   margin-bottom: 2.5rem;
 }
+
 
 .auth-title {
   font-size: 2.5rem;
