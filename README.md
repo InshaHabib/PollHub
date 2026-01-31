@@ -5,8 +5,6 @@ An interactive **Online Polling and Survey Website** that allows users to create
 ## Live Demo
 https://pollinghub.netlify.app/
 
----
-
 ## 🚀 Features
 
 ### 🔐 User Authentication
