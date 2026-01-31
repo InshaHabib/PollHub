@@ -2,6 +2,9 @@
 
 An interactive **Online Polling and Survey Website** that allows users to create polls, participate in voting, and view results in **real-time**. The platform supports authentication, live vote updates, poll expiration, and data visualization.
 
+## Live Demo
+https://pollinghub.netlify.app/
+
 ---
 
 ## 🚀 Features
